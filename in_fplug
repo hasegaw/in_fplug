@@ -30,7 +30,7 @@ del fplug_paths[0]
 def collect(device_name):
     try:
         dev = FPlugDevice(device_name, debug = False, timeout = 20)
-        r = [ time.time(), {
+        r = [ int(time.time()), {
             'name': os.path.basename(device_name),
             'power': dev.get_power_realtime()
         } ]
@@ -43,14 +43,12 @@ while True:
     t = time.time()
     polled_devices = 0
     for device_name in fplug_paths:
-        pool = (last_pool_time[device_name] + duration < t ) if device_name in last_pool_time else True
+        pool = (last_pool_time[device_name] + duration < t) if device_name in last_pool_time else True
 
         if pool:
             collect(device_name)
             last_pool_time[device_name] =  time.time()
             polled_devices += 1
+
     if polled_devices == 0:
         time.sleep(1)
-#    else:
-#        print("polled %d devices" % polled_devices, file)
-
